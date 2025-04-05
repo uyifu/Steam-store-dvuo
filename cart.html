@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>سلة المشتريات</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background-color: #121212;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 30px;
+    }
+    .cart-container {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+    }
+    .cart-title {
+      text-align: center;
+      font-size: 26px;
+      margin-bottom: 20px;
+    }
+    .cart-item {
+      background-color: #1f1f1f;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    .cart-item img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+    .item-info {
+      flex-grow: 1;
+    }
+    .item-info h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+    .item-info p {
+      margin: 5px 0 0;
+      color: #4caf50;
+    }
+    .remove-btn {
+      background-color: #ff5252;
+      color: white;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .total {
+      text-align: center;
+      font-size: 20px;
+      margin: 20px 0;
+    }
+    .checkout-btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background-color: #ffc439;
+      color: black;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 16px;
+      background-color: #00ff8c;
+      color: black;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(0, 255, 140, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="cart-container">
+    <h2 class="cart-title">سلة المشتريات</h2>
+    <div id="cartItems"></div>
+    <p class="total" id="totalPrice">الإجمالي: $0</p>
+    <button class="checkout-btn" onclick="checkout()">تأكيد الشراء</button>
+    <a href="index.html" class="back-link">⬅ العودة إلى المتجر</a>
+  </div>
+
+  <script>
+    function loadCart() {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const cartItemsDiv = document.getElementById("cartItems");
+      const totalPriceEl = document.getElementById("totalPrice");
+      let total = 0;
+      cartItemsDiv.innerHTML = "";
+      if (cart.length === 0) {
+        cartItemsDiv.innerHTML = "<p style='text-align:center;'>لا يوجد منتجات في السلة.</p>";
+        totalPriceEl.textContent = "الإجمالي: $0";
+        return;
+      }
+      cart.forEach((item, index) => {
+        const itemEl = document.createElement("div");
+        itemEl.className = "cart-item";
+        itemEl.innerHTML = `
+          <img src="${item.image}" alt="${item.name}">
+          <div class="item-info">
+            <h3>${item.name}</h3>
+            <p>$${item.price}</p>
+          </div>
+          <button class="remove-btn" onclick="removeItem(${index})">حذف</button>
+        `;
+        cartItemsDiv.appendChild(itemEl);
+        total += parseFloat(item.price);
+      });
+      totalPriceEl.textContent = `الإجمالي: $${total.toFixed(2)}`;
+    }
+
+    function removeItem(index) {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cart.splice(index, 1);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      loadCart();
+    }
+
+    function checkout() {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      if (cart.length === 0) {
+        alert("السلة فارغة.");
+        return;
+      }
+
+      // فتح صفحة الدفع على PayPal
+      window.open("https://www.paypal.com/paypalme/igbariabshar/1", "_blank");
+
+      // ملاحظة للمستخدم
+      alert("✅ تم تحويلك إلى PayPal. بعد الدفع، يرجى التواصل معنا لتأكيد الطلب.");
+    }
+
+    loadCart();
+  </script>
+</body>
+</html>
+
+
+
+
+
+

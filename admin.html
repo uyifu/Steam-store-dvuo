@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>لوحة الأدمن</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      background: #121212;
+      color: white;
+      font-family: Arial;
+      padding: 20px;
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px 0;
+      width: 100%;
+      border-radius: 6px;
+      border: none;
+    }
+    #preview {
+      display: none;
+      max-width: 150px;
+      margin: 10px 0;
+      border-radius: 6px;
+    }
+    .product-item {
+      background: #1f1f1f;
+      padding: 15px;
+      margin-top: 10px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      justify-content: space-between;
+    }
+    .product-item img {
+      max-width: 80px;
+      border-radius: 6px;
+    }
+    .product-info {
+      flex-grow: 1;
+    }
+    .delete-btn {
+      background: red;
+      color: white;
+      cursor: pointer;
+    }
+    .back-btn {
+      background: #00ff8c;
+      color: black;
+      font-weight: bold;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>إضافة منتج</h2>
+  <input type="text" id="name" placeholder="اسم المنتج" />
+  <input type="number" id="price" placeholder="السعر (مثال: 1)" />
+  <input type="file" id="imageInput" accept="image/*" />
+  <label><input type="checkbox" id="allowDelete"> السماح بالحذف</label>
+  <img id="preview" />
+  <button onclick="addProduct()">إضافة المنتج</button>
+
+  <h3 style="margin-top:30px;">المنتجات الحالية:</h3>
+  <div id="adminProductList"></div>
+
+  <button class="back-btn" onclick="location.href='index.html'">⬅ الرجوع إلى المتجر</button>
+
+  <script>
+    // عرض الصورة
+    document.getElementById("imageInput").addEventListener("change", function () {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const preview = document.getElementById("preview");
+          preview.src = e.target.result;
+          preview.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // إضافة المنتج
+    function addProduct() {
+      const name = document.getElementById("name").value.trim();
+      const price = document.getElementById("price").value;
+      const allowDelete = document.getElementById("allowDelete").checked;
+      const file = document.getElementById("imageInput").files[0];
+
+      if (!name || !price || !file) {
+        alert("يرجى تعبئة كل الحقول");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const imageBase64 = e.target.result;
+        const newProduct = {
+          name: name,
+          price: parseFloat(price),
+          image: imageBase64,
+          allowDelete: allowDelete
+        };
+
+        const existingProducts = JSON.parse(localStorage.getItem("products")) || [];
+        existingProducts.push(newProduct);
+        localStorage.setItem("products", JSON.stringify(existingProducts));
+
+        alert("تمت إضافة المنتج بنجاح!");
+        resetForm();
+        loadProducts();
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    function resetForm() {
+      document.getElementById("name").value = "";
+      document.getElementById("price").value = "";
+      document.getElementById("imageInput").value = "";
+      document.getElementById("allowDelete").checked = false;
+      document.getElementById("preview").style.display = "none";
+    }
+
+    // عرض المنتجات
+    function loadProducts() {
+      const list = document.getElementById("adminProductList");
+      const products = JSON.parse(localStorage.getItem("products")) || [];
+      list.innerHTML = "";
+
+      products.forEach((product, index) => {
+        const div = document.createElement("div");
+        div.className = "product-item";
+        div.innerHTML = `
+          <img src="${product.image}" />
+          <div class="product-info">
+            <h4>${product.name}</h4>
+            <p>$${product.price}</p>
+          </div>
+          <button class="delete-btn" onclick="deleteProduct(${index})">حذف</button>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    // حذف المنتج
+    function deleteProduct(index) {
+      if (!confirm("هل أنت متأكد أنك تريد حذف هذا المنتج؟")) return;
+      const products = JSON.parse(localStorage.getItem("products")) || [];
+      products.splice(index, 1);
+      localStorage.setItem("products", JSON.stringify(products));
+      loadProducts();
+    }
+
+    loadProducts();
+  </script>
+
+</body>
+</html>
+
+
+
+
+
+

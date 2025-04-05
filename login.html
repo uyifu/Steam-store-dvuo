@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>تسجيل الدخول</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background-color: #111;
+      color: white;
+      font-family: Arial;
+      text-align: center;
+      padding: 30px;
+    }
+    .container {
+      max-width: 400px;
+      background: #222;
+      padding: 20px;
+      border-radius: 10px;
+      margin: auto;
+    }
+    input {
+      display: block;
+      width: 90%;
+      margin: 10px auto;
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+    }
+    button {
+      background-color: #00ff99;
+      color: black;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    .switch {
+      margin-top: 20px;
+      color: #ccc;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2 id="formTitle">تسجيل الدخول</h2>
+  <input type="email" id="email" placeholder="البريد الإلكتروني" required>
+  <input type="password" id="password" placeholder="كلمة المرور" required>
+  <button onclick="submitForm()">دخول</button>
+
+  <p class="switch" onclick="toggleForm()">أو إنشاء حساب جديد</p>
+</div>
+
+<script>
+  let isLogin = true;
+
+  function toggleForm() {
+    isLogin = !isLogin;
+    document.getElementById("formTitle").textContent = isLogin ? "تسجيل الدخول" : "إنشاء حساب";
+    document.querySelector("button").textContent = isLogin ? "دخول" : "إنشاء حساب";
+    document.querySelector(".switch").textContent = isLogin ? "أو إنشاء حساب جديد" : "أو العودة لتسجيل الدخول";
+  }
+
+  function submitForm() {
+    const email = document.getElementById("email").value.trim();
+    const pass = document.getElementById("password").value;
+
+    if (!email || !pass) return alert("يرجى ملء الحقول");
+
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+
+    if (isLogin) {
+      const user = users.find(u => u.email === email && u.password === pass);
+      if (!user) return alert("بيانات غير صحيحة!");
+
+      localStorage.setItem("loggedIn", "true");
+      localStorage.setItem("userEmail", email);
+      alert("تم تسجيل الدخول بنجاح!");
+      window.location.href = "index.html";
+    } else {
+      const exists = users.find(u => u.email === email);
+      if (exists) return alert("هذا البريد مسجل بالفعل");
+
+      users.push({ email, password: pass });
+      localStorage.setItem("users", JSON.stringify(users));
+      alert("تم إنشاء الحساب! قم بتسجيل الدخول الآن");
+      toggleForm();
+    }
+  }
+</script>
+
+</body>
+</html>
+
+
+
+

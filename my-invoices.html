@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>مشترياتي</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      background-color: #121212;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #00ff8c;
+    }
+
+    .invoice {
+      background-color: #1f1f1f;
+      padding: 20px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      border: 1px solid #333;
+    }
+
+    .invoice strong {
+      color: #00ff8c;
+    }
+
+    .back-btn {
+      display: inline-block;
+      margin-top: 20px;
+      background: #00ff8c;
+      color: black;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(0, 255, 140, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>مشترياتي / فواتيري</h1>
+
+  <div id="invoiceList"></div>
+
+  <a href="index.html" class="back-btn">⬅ الرجوع إلى المتجر</a>
+
+  <script>
+    const invoices = JSON.parse(localStorage.getItem("myInvoices")) || [];
+    const container = document.getElementById("invoiceList");
+
+    if (invoices.length === 0) {
+      container.innerHTML = "<p style='text-align:center;'>لا توجد فواتير حتى الآن.</p>";
+    } else {
+      invoices.reverse().forEach(inv => {
+        const div = document.createElement("div");
+        div.className = "invoice";
+        div.innerHTML = `
+          <p><strong>رقم الفاتورة:</strong> ${inv.id}</p>
+          <p><strong>المنتج:</strong> ${inv.name}</p>
+          <p><strong>السعر:</strong> $${inv.price}</p>
+          <p><strong>الطريقة:</strong> ${inv.method}</p>
+          <p><strong>الوقت:</strong> ${inv.date}</p>
+        `;
+        container.appendChild(div);
+      });
+    }
+  </script>
+
+</body>
+</html>

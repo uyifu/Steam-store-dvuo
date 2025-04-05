@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>إتمام الشراء</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background-color: #121212;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      text-align: center;
+    }
+    .box {
+      background-color: #1e1e1e;
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 400px;
+      margin: auto;
+    }
+    .box h2 {
+      margin-bottom: 20px;
+    }
+    button {
+      padding: 12px 20px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+    }
+    .paypal-btn {
+      background-color: #ffc439;
+      color: black;
+    }
+    .star-btn {
+      background-color: gold;
+      color: black;
+    }
+    .note {
+      font-size: 14px;
+      color: #bbb;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2 id="productName">شراء المنتج</h2>
+  <p>السعر: <strong>$1.00</strong></p>
+
+  <!-- زر PayPal -->
+  <button class="paypal-btn" onclick="payWithPaypal()">شراء عبر PayPal</button>
+
+  <!-- زر نجمة -->
+  <button class="star-btn" onclick="buyWithStar()">شراء باستخدام نجمة</button>
+  <p class="note">ميزة الشراء بالنجمة متاحة فقط بعد أول عملية شراء حقيقية واحدة على الأقل.</p>
+</div>
+
+<script>
+  const product = JSON.parse(localStorage.getItem("checkoutProduct"));
+  if (product) {
+    document.getElementById("productName").textContent = "شراء: " + product.name;
+  } else {
+    alert("لم يتم اختيار منتج.");
+    window.location.href = "index.html";
+  }
+
+  // فتح رابط PayPal بالدولار والإيميل
+  function payWithPaypal() {
+    const itemName = product ? encodeURIComponent(product.name) : "منتج";
+    const url = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=igbariabshar@gmail.com&item_name=${itemName}&amount=1.00&currency_code=USD`;
+    window.open(url, "_blank");
+
+    // تجهيز الفاتورة وإعطاء نجمة
+    setTimeout(() => {
+      generateInvoice("PayPal");
+      let stars = parseInt(localStorage.getItem("stars")) || 0;
+      localStorage.setItem("stars", stars + 1);
+      alert("✅ تم الدفع بنجاح! وتمت إضافة نجمة.");
+      window.location.href = "index.html";
+    }, 5000);
+  }
+
+  // شراء باستخدام نجمة
+  function buyWithStar() {
+    let stars = parseInt(localStorage.getItem("stars")) || 0;
+    if (stars > 0) {
+      localStorage.setItem("stars", stars - 1);
+      generateInvoice("نجمة");
+      alert("✅ تم شراء المنتج باستخدام نجمة!");
+      window.location.href = "index.html";
+    } else {
+      alert("لا يمكنك استخدام النجمة إلا بعد أول عملية شراء حقيقية.");
+    }
+  }
+
+  // إنشاء الفاتورة
+  function generateInvoice(method) {
+    const invoiceId = "#FA-" + Math.floor(100000 + Math.random() * 900000);
+    const invoice = {
+      id: invoiceId,
+      name: product.name,
+      price: product.price || 1,
+      date: new Date().toLocaleString(),
+      method: method
+    };
+
+    const userInvoices = JSON.parse(localStorage.getItem("myInvoices")) || [];
+    userInvoices.push(invoice);
+    localStorage.setItem("myInvoices", JSON.stringify(userInvoices));
+
+    const adminInvoices = JSON.parse(localStorage.getItem("adminInvoices")) || [];
+    adminInvoices.push(invoice);
+    localStorage.setItem("adminInvoices", JSON.stringify(adminInvoices));
+  }
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
