@@ -50,7 +50,6 @@
   <input type="email" id="email" placeholder="البريد الإلكتروني" required>
   <input type="password" id="password" placeholder="كلمة المرور" required>
   <button onclick="submitForm()">دخول</button>
-
   <p class="switch" onclick="toggleForm()">أو إنشاء حساب جديد</p>
 </div>
 
@@ -86,15 +85,16 @@
 
       users.push({ email, password: pass });
       localStorage.setItem("users", JSON.stringify(users));
-      alert("تم إنشاء الحساب! قم بتسجيل الدخول الآن");
-      toggleForm();
+
+      // تسجيل دخول تلقائي بعد إنشاء الحساب
+      localStorage.setItem("loggedIn", "true");
+      localStorage.setItem("userEmail", email);
+
+      alert("تم إنشاء الحساب وتسجيل الدخول!");
+      window.location.href = "index.html";
     }
   }
 </script>
 
 </body>
 </html>
-
-
-
-
