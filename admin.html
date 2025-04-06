@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <title>لوحة الأدمن</title>
+  <title>لوحة الأدمن - Dovex</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
@@ -11,7 +11,7 @@
       font-family: Arial;
       padding: 20px;
     }
-    input, button {
+    input, button, textarea {
       padding: 10px;
       margin: 5px 0;
       width: 100%;
@@ -56,12 +56,15 @@
 </head>
 <body>
 
-  <h2>إضافة منتج</h2>
+  <h2>إضافة منتج جديد</h2>
+
   <input type="text" id="name" placeholder="اسم المنتج" />
   <input type="number" id="price" placeholder="السعر (مثال: 1)" />
+  <textarea id="description" placeholder="وصف المنتج مثل: شراء حساب من ستيم آمن أكثر - ملاحظات - ميزات..." rows="4"></textarea>
   <input type="file" id="imageInput" accept="image/*" />
   <label><input type="checkbox" id="allowDelete"> السماح بالحذف</label>
   <img id="preview" />
+
   <button onclick="addProduct()">إضافة المنتج</button>
 
   <h3 style="margin-top:30px;">المنتجات الحالية:</h3>
@@ -70,7 +73,6 @@
   <button class="back-btn" onclick="location.href='index.html'">⬅ الرجوع إلى المتجر</button>
 
   <script>
-    // عرض الصورة
     document.getElementById("imageInput").addEventListener("change", function () {
       const file = this.files[0];
       if (file) {
@@ -84,10 +86,10 @@
       }
     });
 
-    // إضافة المنتج
     function addProduct() {
       const name = document.getElementById("name").value.trim();
       const price = document.getElementById("price").value;
+      const description = document.getElementById("description").value.trim();
       const allowDelete = document.getElementById("allowDelete").checked;
       const file = document.getElementById("imageInput").files[0];
 
@@ -100,10 +102,11 @@
       reader.onload = function (e) {
         const imageBase64 = e.target.result;
         const newProduct = {
-          name: name,
+          name,
           price: parseFloat(price),
           image: imageBase64,
-          allowDelete: allowDelete
+          description,
+          allowDelete
         };
 
         const existingProducts = JSON.parse(localStorage.getItem("products")) || [];
@@ -121,12 +124,12 @@
     function resetForm() {
       document.getElementById("name").value = "";
       document.getElementById("price").value = "";
+      document.getElementById("description").value = "";
       document.getElementById("imageInput").value = "";
       document.getElementById("allowDelete").checked = false;
       document.getElementById("preview").style.display = "none";
     }
 
-    // عرض المنتجات
     function loadProducts() {
       const list = document.getElementById("adminProductList");
       const products = JSON.parse(localStorage.getItem("products")) || [];
@@ -140,6 +143,7 @@
           <div class="product-info">
             <h4>${product.name}</h4>
             <p>$${product.price}</p>
+            <small>${product.description || "لا يوجد وصف"}</small>
           </div>
           <button class="delete-btn" onclick="deleteProduct(${index})">حذف</button>
         `;
@@ -147,7 +151,6 @@
       });
     }
 
-    // حذف المنتج
     function deleteProduct(index) {
       if (!confirm("هل أنت متأكد أنك تريد حذف هذا المنتج؟")) return;
       const products = JSON.parse(localStorage.getItem("products")) || [];
@@ -161,9 +164,3 @@
 
 </body>
 </html>
-
-
-
-
-
-
