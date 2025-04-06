@@ -2,8 +2,20 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <title>المتجر</title>
+  <title>Dovex - متجر حسابات ستيم رخيصة</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <!-- SEO -->
+  <meta name="description" content="متجر Dovex يقدم حسابات ستيم أصلية ورخيصة، اشترِ الآن واستلم فوراً. حسابات مضمونة وأسعار منافسة.">
+  <meta name="keywords" content="Dovex, ستيم, حسابات ستيم, شراء ستيم, حسابات رخيصة, ستيم مشترك, متجر ستيم, حسابات ألعاب, حسابات مفعلة, duvo steam accounts">
+  <meta name="author" content="Dovex Store">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Dovex | متجر حسابات ستيم أصلية">
+  <meta property="og:description" content="أفضل متجر عربي لحسابات ستيم المضمونة والرخيصة. شراء سريع وآمن.">
+  <meta property="og:image" content="https://cdn-icons-png.flaticon.com/512/732/732228.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://dovex.example.com">
+
   <link rel="stylesheet" href="style.css" />
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
@@ -17,13 +29,23 @@
       display: none;
       cursor: pointer;
     }
+
+    @media (max-width: 768px) {
+      header.main-header nav {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .product-card {
+        width: 90% !important;
+      }
+    }
   </style>
 </head>
 <body>
 
 <header class="main-header">
   <div>
-    <h1>متجرduvo</h1>
+    <h1>Dovex</h1>
     <p class="note">بعد الشراء يرجى التواصل معنا لاستلام الحساب</p>
   </div>
   <nav>
@@ -34,7 +56,7 @@
   </nav>
 </header>
 
-<!-- زر إضافة منتج (للإدمن فقط) -->
+<!-- زر إضافة منتج للإدمن -->
 <div style="text-align:center;">
   <button id="addProductBtn" class="add-product-btn" onclick="window.location.href='admin.html'">➕ إضافة منتج</button>
 </div>
@@ -44,7 +66,7 @@
 </main>
 
 <!-- واتساب -->
-<a href="https://wa.me/972503761778" target="_blank" class="whatsapp-float">&#x2709;</a>
+<a href="https://wa.me/972507361778" target="_blank" class="whatsapp-float">&#x2709;</a>
 
 <!-- تواصل -->
 <div style="position: fixed; bottom: 100px; right: 20px; z-index: 999;" onmouseleave="hideContact()">
@@ -68,8 +90,8 @@
       const card = document.createElement("div");
       card.className = "product-card";
       card.innerHTML = `
-        <img src="${product.image}" alt="${product.name}" />
-        <h3>${product.name}</h3>
+        <img src="${product.image}" alt="${product.name}" onclick="showDetails(${index})" style="cursor:pointer;" />
+        <h3 onclick="showDetails(${index})" style="cursor:pointer;">${product.name}</h3>
         <p>$${product.price}</p>
         <div style="display: flex; justify-content: space-between; gap: 10px;">
           <button onclick="addToCart(${index})">🛒 إضافة للسلة</button>
@@ -78,6 +100,13 @@
       `;
       productList.appendChild(card);
     });
+  }
+
+  function showDetails(index) {
+    const products = JSON.parse(localStorage.getItem("products")) || [];
+    const product = products[index];
+    const description = product.description || "لا يوجد وصف لهذا المنتج.";
+    alert(`معلومات المنتج:\n\n${product.name}\n\nالوصف:\n${description}`);
   }
 
   function updateCartCount() {
@@ -124,7 +153,6 @@
     }
   }
 
-  // تحميل الصفحة
   window.onload = function () {
     loadProducts();
     updateCartCount();
@@ -141,22 +169,3 @@
 
 </body>
 </html>
-
-
-
-
-
-  
-
-
-    
-
-
-  
-
-
-
-
-
-
-
